@@ -40,6 +40,10 @@ class counter(object):
 class MySorted(object):
     '''
     an object which has two methods (bubble sort and merge sort) to sort an iterable
+    implemented sorting methods:
+    - bubble_sort
+    - merge_sort
+    - quick_sort
     '''
     def __init__(self):
         '''
@@ -180,3 +184,37 @@ class MySorted(object):
         
         Counter.record_timing()
         return (iterable, Counter)   
+
+    
+    def quick_sorted(self, iterable, key=lambda x: x, reverse=False, Counter=None):
+        '''
+        recursively partition the iterable and sort
+        '''
+        if not Counter:
+            Counter = counter()
+            
+        # when length of the iterable = 1, terminate the iteration
+        if len(iterable) <= 1:
+            return (iterable, Counter)
+        else:
+            # set the last element in the list as a pivot, put it in the right side
+            pivot = iterable[-1]
+            left = []
+            right = [pivot]
+            
+            for _, x in enumerate(iterable[:-1]):
+                # be careful with key(x) == key(pivot) case, always put x in the left list
+                # otherwise it will cause an endless recursion loop
+                if (key(x) <= key(pivot) and not reverse) or (key(x) >= key(pivot) and reverse):
+                    left.append(x)
+                else:
+                    right.append(x)
+                Counter.compare()
+                Counter.swap()
+
+            left, _ = self.quick_sorted(left, key, reverse, Counter)
+            right, _ = self.quick_sorted(right, key, reverse, Counter)
+            iterable = left + right
+            
+            Counter.record_timing()
+            return (iterable, Counter)
